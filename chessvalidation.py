@@ -1,5 +1,15 @@
+import chessmove
 
-def valid_position_move(board, turn, startX, startY, enPassant = [[-1, -1], [-1, -1]], castling = [[False, False, False], [False, False, False]]):
+def valid_board(board, turn, enPassant, castling):
+    for i in range(8):
+        for j in range(8):
+            if (board[i][j] * turn < 0):
+                valid_pos = valid_position_move(board, -turn, i, j, enPassant, castling)
+                for move in valid_pos:
+                    if (board[move[0]][move[1]] == turn * 6): return False
+    return True
+
+def valid_position_move(board, turn, startX, startY, enPassant, castling):
     def is_valid(pos):
         return (0 <= pos[0] and pos[0] < 8 and 0 <= pos[1] and pos[1] < 8)
 
@@ -123,4 +133,12 @@ def valid_position_move(board, turn, startX, startY, enPassant = [[-1, -1], [-1,
                     if (board[startX][i] != 0): check = False
                 if (check): valid_pos.append([startX, startY + 2])
     valid_pos = [i for i in valid_pos if is_valid(i)]
+    return valid_pos
+
+def valid_position_move_no_danger(board, turn, startX, startY, enPassant, castling):
+    valid_pos_temp = valid_position_move(board, turn, startX, startY, enPassant, castling)
+    valid_pos = []
+    for move in valid_pos_temp:
+        new_board, enPassant, castling = chessmove.move_piece(board.copy(), startX, startY, move[0], move[1], enPassant, castling)
+        if (valid_board(new_board, turn, enPassant, castling)): valid_pos.append(move)
     return valid_pos

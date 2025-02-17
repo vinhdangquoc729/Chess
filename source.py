@@ -21,6 +21,11 @@ class gameWindow:
 
     def draw(self, display):
         self.chessboard.draw(display, 100)
+        if (self.chessboard.surrender == True):
+            pygame.font.init()
+            my_font = pygame.font.SysFont('Comic Sans MS', 30)
+            text_surface = my_font.render('Game Over!', False, (255, 0, 0))
+            display.blit(text_surface, (400 - text_surface.get_width() / 2, 30))
 
     def handle_click(self, mx, my):
         self.chessboard.handle_click(mx, my, 100)
@@ -49,7 +54,7 @@ def draw(display):
 
 if __name__ == '__main__':
     running = True
-    while running and not(board.endgame()) and not(board.surrender):
+    while running and not(board.endgame()):
         mx, my = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

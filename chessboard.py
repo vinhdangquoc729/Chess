@@ -40,8 +40,8 @@ class chessboard:
     def is_valid(self, pos):
         return (0 <= pos[0] and pos[0] < 8 and 0 <= pos[1] and pos[1] < 8)
 
-    def valid_position_move(self, startX, startY):
-        return chessvalidation.valid_position_move(board = self.board, turn = self.turn, startX=startX, startY=startY, enPassant = self.enPassant)
+    def valid_position_move(self, startX, startY, opponent = 1):
+        return chessvalidation.valid_position_move_no_danger(board = self.board, turn = self.turn * opponent, startX=startX, startY=startY, enPassant = self.enPassant, castling = self.castling)
 
     def handle_click(self, mx, my, padding):
         mmx = mx - padding
@@ -63,6 +63,15 @@ class chessboard:
     def move_piece(self, startX, startY, endX, endY):
         self.choosing_square = [endX, endY]
         self.board, self.enPassant, self.castling = chessmove.move_piece(self.board, startX, startY, endX, endY, self.enPassant, self.castling)
+        valid_pos = []
+        for i in range (8):
+            for j in range(8):
+                if (self.board[i][j] * self.turn < 0):
+                    valid_pos = valid_pos + self.valid_position_move(i, j, -1)
+        if (len(valid_pos) == 0):
+            self.surrender = True
+        else:
+            print (valid_pos)
         
     def point(self):
         point_each = [0, 1, 5, 3, 3, 9, 100]

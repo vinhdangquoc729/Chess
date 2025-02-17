@@ -23,7 +23,8 @@ def calculate(board, turn, enPassant, castling, depth):
     valid_pos = []
     for i in range(8):
         for j in range(8):
-            temp_valid = chessvalidation.valid_position_move(board, turn, i, j)
+            if (board[i][j] == 0): continue
+            temp_valid = chessvalidation.valid_position_move(board, turn, i, j, enPassant, castling)
             for valid in temp_valid:
                 valid_pos.append([[i, j], valid])
     if (len(valid_pos) == 0): return [turn * 10000, []]

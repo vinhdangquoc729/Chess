@@ -1,1 +1,1 @@
-startX +
+.copy()
