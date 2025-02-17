@@ -54,9 +54,10 @@ def calculate(board, turn, enPassant, castling, depth):
             result = chessmove.move_piece(board.copy(), valid_move[0][0], valid_move[0][1], valid_move[1][0], valid_move[1][1], enPassant, castling)
             new_board = result[0]
             enPassant = result[1]
+            castling = result[2]
             #new_board[valid_move[1][0]][valid_move[1][1]] = new_board[valid_move[0][0]][valid_move[0][1]]
             #new_board[valid_move[0][0]][valid_move[0][1]] = 0
-            if (not(check_king(new_board, turn))): return [-10000, []]
+            if (not(check_king(new_board, turn))): return [10000, []]
             cal = calculate(new_board, -turn, enPassant, castling, depth - 1)[0]
             if (cal < min):
                 min = cal
