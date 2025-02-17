@@ -1,8 +1,10 @@
-def valid_position_move(board, turn, startX, startY):
+
+def valid_position_move(board, turn, startX, startY, enPassant = [[-1, -1], [-1, -1]], castling = [[False, False, False], [False, False, False]]):
     def is_valid(pos):
         return (0 <= pos[0] and pos[0] < 8 and 0 <= pos[1] and pos[1] < 8)
 
     valid_pos = []
+    #print(board)
     if (board[startX][startY] * turn <= 0):
         return valid_pos
     #white pawn
@@ -15,6 +17,10 @@ def valid_position_move(board, turn, startX, startY):
             valid_pos.append([startX - 1, startY - 1])
         if (startY < 7 and board[startX - 1][startY + 1] < 0):
             valid_pos.append([startX - 1, startY + 1])
+        if (startY > 0 and [startX - 1, startY - 1] == enPassant[0]):
+            valid_pos.append(enPassant[0])
+        if (startY < 7 and [startX - 1, startY + 1] == enPassant[0]):
+            valid_pos.append(enPassant[0])
 
     #black pawn
     if (board[startX][startY] == -1 and startX > 0):
@@ -26,6 +32,11 @@ def valid_position_move(board, turn, startX, startY):
             valid_pos.append([startX + 1, startY - 1])
         if (startY < 7 and board[startX + 1][startY + 1] > 0):
             valid_pos.append([startX + 1, startY + 1])
+        #enPassant
+        if (startY > 0 and [startX + 1, startY - 1] == enPassant[0]):
+            valid_pos.append(enPassant[1])
+        if (startY < 7 and [startX + 1, startY + 1] == enPassant[0]):
+            valid_pos.append(enPassant[1])
     
     #rooks
     if (board[startX][startY] == 2 or board[startX][startY] == -2):
@@ -83,5 +94,33 @@ def valid_position_move(board, turn, startX, startY):
             locY = startY + dir[i][1]
             if (is_valid([locX, locY]) and board[locX][locY] * board[startX][startY] <= 0):
                 valid_pos.append([locX, locY])
+
+    #white king castling
+    if (board[startX][startY] == 6):
+        if (not castling[0][0]):
+            if (not castling[0][1]):
+                check = True
+                for i in range(1, startY):
+                    if (board[startX][i] != 0): check = False
+                if (check): valid_pos.append([startX, startY - 2])
+            if (not castling[0][2]):
+                check = True
+                for i in range(startY + 1, 8):
+                    if (board[startX][i] != 0): check = False
+                if (check): valid_pos.append([startX, startY + 2])
+
+    #black king castling
+    if (board[startX][startY] == -6):
+        if (not castling[1][0]):
+            if (not castling[1][1]):
+                check = True
+                for i in range(1, startY):
+                    if (board[startX][i] != 0): check = False
+                if (check): valid_pos.append([startX, startY - 2])
+            if (not castling[1][2]):
+                check = True
+                for i in range(startY + 1, 8):
+                    if (board[startX][i] != 0): check = False
+                if (check): valid_pos.append([startX, startY + 2])
 
     return valid_pos

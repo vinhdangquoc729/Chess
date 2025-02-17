@@ -49,7 +49,7 @@ def draw(display):
 
 if __name__ == '__main__':
     running = True
-    while running:
+    while running and not(board.endgame()):
         mx, my = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

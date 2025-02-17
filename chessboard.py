@@ -1,7 +1,9 @@
 import pygame
 import numpy as np
 import chessvalidation
+import chessmove
 import minimax
+import time
 
 class chessboard:
     def __init__(self, size, board = np.array):
@@ -11,6 +13,8 @@ class chessboard:
         self.choosing_square = [-1, -1]
         self.highlighting_square = [-1, -1]
         self.turn = 1
+        self.enPassant = [[-1, -1], [-1, -1]]
+        self.castling = [[False, False, False], [False, False, False]]
 
         self.img_black = []
         self.img_black.append(pygame.image.load("img\\bp.png"))
@@ -36,7 +40,7 @@ class chessboard:
         return (0 <= pos[0] and pos[0] < 8 and 0 <= pos[1] and pos[1] < 8)
 
     def valid_position_move(self, startX, startY):
-        return chessvalidation.valid_position_move(board = self.board, turn = self.turn, startX=startX, startY=startY)
+        return chessvalidation.valid_position_move(board = self.board, turn = self.turn, startX=startX, startY=startY, enPassant = self.enPassant)
 
     def handle_click(self, mx, my, padding):
         mmx = mx - padding
@@ -56,12 +60,9 @@ class chessboard:
                 self.choosing_square = [posX, posY]
 
     def move_piece(self, startX, startY, endX, endY):
-        self.board[endX][endY] = self.board[startX][startY]
-        self.board[startX][startY] = 0
-        if ((self.board[endX][endY] == 1 or self.board[endX][endY] == -1) and (endX == 0 or endX == 7)):
-            self.board[endX][endY] = self.board[endX][endY] * 5
         self.choosing_square = [endX, endY]
-
+        self.board, self.enPassant, self.castling = chessmove.move_piece(self.board, startX, startY, endX, endY, self.enPassant, self.castling)
+        
     def point(self):
         point_each = [0, 1, 5, 3, 3, 9, 100]
         p = 0
@@ -73,6 +74,7 @@ class chessboard:
     def draw(self, display, padding):
         square_size = self.square_size
         valid_position_move = self.valid_position_move(self.choosing_square[0], self.choosing_square[1])
+        #print(valid_position_move)
         for i in range (8):
             for j in range (8):
                 rect = pygame.Rect(padding + i * square_size, padding + j * square_size, square_size, square_size)
@@ -91,9 +93,24 @@ class chessboard:
                 radius = square_size // 4
                 pygame.draw.circle(display, (185, 202, 67), center = (centerX, centerY), radius = radius)
         #print(minimax.calculate(self.board, self.turn, 3))
+    def endgame(self):
+        black_king = white_king = False
+        for i in range(8):
+            for j in range(8):
+                if (self.board[i][j] == -6): black_king = True
+                elif (self.board[i][j] == 6): white_king = True
+        if (not(black_king)):
+            print("White wins!")
+            return True
+        elif(not(white_king)):
+            print("Black wins!")
+            return True
+        else: return False
+
 
     def AI_move(self):
-        move = minimax.calculate(self.board, self.turn, 3)[1]
+        move = minimax.calculate(self.board, self.turn, self.enPassant, self.castling, 3)[1]
         self.move_piece(move[0][0], move[0][1], move[1][0], move[1][1])
         self.choosing_square = move[1]
         self.turn = -self.turn
+        #time.sleep(0.5)
