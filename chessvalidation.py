@@ -105,7 +105,7 @@ def valid_position_move(board, turn, startX, startY, enPassant = [[-1, -1], [-1,
                 if (check): valid_pos.append([startX, startY - 2])
             if (not castling[0][2]):
                 check = True
-                for i in range(startY + 1, 8):
+                for i in range(startY + 1, 7):
                     if (board[startX][i] != 0): check = False
                 if (check): valid_pos.append([startX, startY + 2])
 

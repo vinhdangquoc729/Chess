@@ -15,6 +15,7 @@ class chessboard:
         self.turn = 1
         self.enPassant = [[-1, -1], [-1, -1]]
         self.castling = [[False, False, False], [False, False, False]]
+        self.surrender = False
 
         self.img_black = []
         self.img_black.append(pygame.image.load("img\\bp.png"))
@@ -110,6 +111,10 @@ class chessboard:
 
     def AI_move(self):
         move = minimax.calculate(self.board, self.turn, self.enPassant, self.castling, 3)[1]
+        if (len(move) == 0): 
+            self.surrender = True
+            print("You win!")
+            return
         self.move_piece(move[0][0], move[0][1], move[1][0], move[1][1])
         self.choosing_square = move[1]
         self.turn = -self.turn
