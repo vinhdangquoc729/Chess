@@ -17,8 +17,8 @@ def move_piece(board, startX, startY, endX, endY, enPassant, castling):
             elif (endY == 6):
                 board[endX][5] = board[endX][7]
                 board[endX][7] = 0
-        if (endX == 7): castling[0] = True
-        else: castling[1] = True
+        if (endX == 7): castling[0][0] = True
+        else: castling[1][0] = True
 
     if (startX == 0 and startY == 0 and board[endX][endY] == -6): castling[1][1] = True
     if (startX == 0 and startY == 7 and board[endX][endY] == -6): castling[1][2] = True

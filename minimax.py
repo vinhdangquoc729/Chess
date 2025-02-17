@@ -1,6 +1,7 @@
 import chessboard
 import chessvalidation
 import chessmove
+import math
 import copy
 import random
 
@@ -29,10 +30,15 @@ def calculate(board, turn, enPassant, castling, depth):
     if (depth == 0): return [point(board), valid_pos[0]]
 
     random.shuffle(valid_pos)
-    # = random.choices(valid_pos, k = 15)
+    #random.choices(valid_pos, k = 5)
     pt = 0
     move = []
     if (turn > 0):
+        """value = [(valid_move, 
+                  calculate(chessmove.move_piece(board.copy(), valid_move[0][0], valid_move[0][1], valid_move[1][0], valid_move[1][1], enPassant, castling)[0],
+                  -turn, enPassant, castling, depth - 1)) for valid_move in valid_pos]
+        sorted_values = sorted(value, key= lambda t: t[1], reverse=True)
+        valid_pos = [t[0] for t in sorted_values[:1]]"""
         max = -10000
         for valid_move in valid_pos:
             result = chessmove.move_piece(board.copy(), valid_move[0][0], valid_move[0][1], valid_move[1][0], valid_move[1][1], enPassant, castling)
@@ -49,6 +55,11 @@ def calculate(board, turn, enPassant, castling, depth):
         pt = max
     
     else:
+        """value = [(valid_move, 
+                  calculate(chessmove.move_piece(board.copy(), valid_move[0][0], valid_move[0][1], valid_move[1][0], valid_move[1][1], enPassant, castling)[0], 
+                -turn, enPassant, castling, depth - 1)) for valid_move in valid_pos]
+        sorted_values = sorted(value, key= lambda t: t[1], reverse=False)
+        valid_pos = [t[0] for t in sorted_values[:1]]"""
         min = 10000
         for valid_move in valid_pos:
             result = chessmove.move_piece(board.copy(), valid_move[0][0], valid_move[0][1], valid_move[1][0], valid_move[1][1], enPassant, castling)
