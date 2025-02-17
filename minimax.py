@@ -5,7 +5,7 @@ import copy
 import random
 
 def point(board):
-    point_each = [0, 1, 5, 3, 3, 9, 100]
+    point_each = [0, 1, 5, 3, 3, 9, 10000]
     p = 0
     for i in range(8):
         for j in range(8):
@@ -41,7 +41,7 @@ def calculate(board, turn, enPassant, castling, depth):
             castling = result[2]
             #new_board[valid_move[1][0]][valid_move[1][1]] = new_board[valid_move[0][0]][valid_move[0][1]]
             #new_board[valid_move[0][0]][valid_move[0][1]] = 0
-            if (not(check_king(new_board, turn))): continue
+            if (not(check_king(new_board, turn))): return [-10000, []]
             cal = calculate(new_board, -turn, enPassant, castling, depth - 1)[0]
             if (cal > max):
                 max = cal
@@ -56,7 +56,7 @@ def calculate(board, turn, enPassant, castling, depth):
             enPassant = result[1]
             #new_board[valid_move[1][0]][valid_move[1][1]] = new_board[valid_move[0][0]][valid_move[0][1]]
             #new_board[valid_move[0][0]][valid_move[0][1]] = 0
-            if (not(check_king(new_board, turn))): continue
+            if (not(check_king(new_board, turn))): return [-10000, []]
             cal = calculate(new_board, -turn, enPassant, castling, depth - 1)[0]
             if (cal < min):
                 min = cal

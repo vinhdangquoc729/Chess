@@ -122,5 +122,5 @@ def valid_position_move(board, turn, startX, startY, enPassant = [[-1, -1], [-1,
                 for i in range(startY + 1, 8):
                     if (board[startX][i] != 0): check = False
                 if (check): valid_pos.append([startX, startY + 2])
-
+    valid_pos = [i for i in valid_pos if is_valid(i)]
     return valid_pos
